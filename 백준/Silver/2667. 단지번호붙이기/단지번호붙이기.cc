@@ -1,50 +1,48 @@
 #include<iostream>
 #include<algorithm>
-#include<vector>
-#include<cstdio>
+#define sz 26
 using namespace std;
-int map[26][26];
-bool check[26][26];
-vector<int>v;
-int n;
+char map[sz][sz] = { 0 };
+int visitD[sz][sz] = { 0 };
+int dx[4] = { 0,0,-1,1 };
+int dy[4] = { 1,-1,0,0 };
+int N;
+int a[676] = { 0 };
 int cnt = 0;
-int dir[4][2] = { {-1,0},{1,0} ,{0,1},{0,-1} };
 void DFS(int x, int y) {
-	for (int i = 0; i < 4; i++) {
-		int nx = x + dir[i][0];
-		int ny = y + dir[i][1];
-		if (nx >= 0 && nx <= n && ny >= 0 && ny <= n) {
-			if (check[nx][ny] == false && map[nx][ny] == 1) {
-				check[nx][ny] = true;
-				cnt++;
-				DFS(nx, ny);
-			}
-		}
-	}
+    visitD[x][y] = 1;
+    for (int i = 0; i < 4; i++) {
+        int nx = x + dx[i];
+        int ny = y + dy[i];
+        if (nx < 0 || N <= nx || ny < 0 || N <= ny)
+            continue;
+        else if (map[nx][ny] == '1' && visitD[nx][ny] == 0) {
+            cnt++;
+            DFS(nx, ny);
+        }
+    }
 }
 int main() {
-	cin >> n;
-	for (int i = 0; i < n; i++) {
-		string input;
-		cin >> input;
-		for (int j = 0; j < n; j++) {
-			map[i][j] = input.at(j) - '0';
-		}
-	}
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
-			if (map[i][j] == 1 && check[i][j] == false) {
-				check[i][j] = true;
-				cnt++;
-				DFS(i, j);
-				v.push_back(cnt);
-				cnt = 0;
-			}
-		}
-	}
-	cout << v.size() << endl;
-	sort(v.begin(), v.end());
-	for (int i = 0; i < v.size(); i++) {
-		cout << v[i] << endl;
-	}
+    cin >> N;
+    for (int i = 0; i < N; i++) {
+        cin >> map[i];
+    }
+    int d = 0;
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            if (map[i][j] == '1' && visitD[i][j] == 0) {
+                cnt++;
+                DFS(i, j);
+                a[d] = cnt;
+                d++;
+                cnt = 0;
+            }
+        }
+    }
+    cout << d << endl;
+    sort(a, a + d);
+    for (int i = 0; i < d; i++) {
+        cout << a[i] << endl;
+    }
+    return 0;
 }
